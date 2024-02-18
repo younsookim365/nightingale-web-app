@@ -1,0 +1,76 @@
+﻿@*/* Group:      8
+   References: Liu, F (2021) Full C# Project: Supermarket Management System | ASP.NET Core Blazor, EF Core, SQL Server, Identity source code (Version 16) [Source code]. https://www.youtube.com/watch?v=DWrH7br4DsM&t=140s
+
+ */*@
+
+@page "/vehicles"
+@attribute [Authorize(Policy = "AdminOnly")]
+
+@inject NavigationManager NavigationManager
+@inject UseCases.IViewVehiclesUseCase ViewVehicleUseCase
+@inject UseCases.IDeleteVehicleUseCase DeleteVehicleUseCase
+
+<h3>Manage Vehicles</h3>
+<br />
+@if (vehicles != null)
+{
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Type</th>
+                <th>NumberPlate</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var vehicle in vehicles)
+            {
+                <tr>
+                    <td>@vehicle.Type</td>
+                    <td>@vehicle.NumberPlate</td>
+                    <td>
+                        <button type="button" @onclick="@(() => EditVehicle(vehicle))" class="btn btn-link">Edit</button>
+                        <button type="button" @onclick="@(() => DeleteVehicle(vehicle.VehicleId))" class="btn btn-link">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+<br />
+<button type="button" @onclick="OnClickAddVehicle" class="btn btn-primary">Add</button>
+
+
+
+@code {
+
+    private List<Vehicle> vehicles;
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        LoadVehicles();
+    }
+
+    private void OnClickAddVehicle()
+    {
+        NavigationManager.NavigateTo("/addvehicle");
+    }
+
+    private void EditVehicle(Vehicle vehicle)
+    {
+        NavigationManager.NavigateTo($"/editvehicle/{vehicle.VehicleId}");
+    }
+
+    private void DeleteVehicle(int vehicleId)
+    {
+        DeleteVehicleUseCase.Delete(vehicleId);
+        LoadVehicles();
+    }
+
+    private void LoadVehicles()
+    {
+        vehicles = ViewVehicleUseCase.Execute()?.ToList();
+    }
+}

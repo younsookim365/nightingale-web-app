@@ -1,0 +1,48 @@
+﻿@*/* Group:      8
+   References: Liu, F (2021) Full C# Project: Supermarket Management System | ASP.NET Core Blazor, EF Core, SQL Server, Identity source code (Version 16) [Source code]. https://www.youtube.com/watch?v=DWrH7br4DsM&t=140s
+
+ */*@
+
+@inject IGetTodayTransactionsUseCase GetTodayTransactionsUseCase
+
+@if (transactions != null)
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Member Username</th>
+                <th>Member Name</th>
+                <th>Date Time</th>
+                <th>Destinations Before</th>
+                <th>Destinations Covered</th>
+                <th>Destinations Left</th>
+                <th>Total Petrol Cost</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var tran in transactions)
+            {
+                <tr>
+                    <td>@tran.CashierName</td>
+                    <td>@tran.ProductName</td>
+                    <td>@tran.TimeStamp.ToString("MM/dd hh:mm")</td>
+                    <td>@tran.BeforeQty</td>
+                    <td>@tran.SoldQty</td>
+                    <td>@(tran.BeforeQty - tran.SoldQty)</td>
+                    <td>@(string.Format("{0:c}", tran.SoldQty * tran.Price))</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private IEnumerable<Transaction> transactions;
+
+    public void LoadTransactions(string cashierName)
+    {
+        transactions = GetTodayTransactionsUseCase.Execute(cashierName);
+        StateHasChanged();
+    }
+
+}

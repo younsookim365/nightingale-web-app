@@ -1,0 +1,20 @@
+﻿@*/* Group:      8
+   References: Liu, F (2021) Full C# Project: Supermarket Management System | ASP.NET Core Blazor, EF Core, SQL Server, Identity source code (Version 16) [Source code]. https://www.youtube.com/watch?v=DWrH7br4DsM&t=140s
+
+ */*@
+
+@using Microsoft.AspNetCore.Components.Authorization
+@inject NavigationManager Navigation
+
+<AuthorizeView>
+    <Authorized>
+        <a class="py-2 d-none d-md-inline-block" href="Identity/Account/Manage">Hello, @context.User.Identity.Name!</a>
+        <form class="py-2 d-none d-md-inline-block" action="/Identity/Account/Logout?returnUrl=%2F" method="post">
+            <button type="submit" class="nav-link btn btn-link">Log out</button>
+        </form>
+    </Authorized>
+    <NotAuthorized>
+        <a class="py-2 d-none d-md-inline-block" href="Identity/Account/Register">Register</a>
+        <a class="py-2 d-none d-md-inline-block" href="Identity/Account/Login">Log in</a>
+    </NotAuthorized>
+</AuthorizeView>
